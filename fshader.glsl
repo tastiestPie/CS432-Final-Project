@@ -14,21 +14,32 @@ out vec4 fColor;
 
 void main()
 {
-     vec3 fL = normalize(L);
-     vec3 fV = normalize(V);
-     vec3 fN = normalize(N);
-     
-    //half-way vector	
-     vec3 H = normalize(fL+fV);
-        
-     float Kd = max(dot(fL,fN),0.0);
-     vec4 diffuse = Kd*lightColor*matDiffColor;
-        
-     float Ks = pow(max(dot(fN,H),0.0),matAlpha);
-     vec4 specular = Ks*lightColor*matSpecColor;
-        
-     vec4 lightColor = (diffuse + specular)/2.0;
-     lightColor.a = 1.0;
-        
-     fColor = lightColor;
+    vec3 fL = normalize(L);
+    vec3 fV = normalize(V);
+    vec3 fN = normalize(N);
+
+    // Debugging: Visualize normals
+    fColor = vec4(fN, 1.0);
+    return;
+
+    // Debugging: Visualize light direction
+    // fColor = vec4(fL, 1.0);
+    // return;
+
+    // Debugging: Visualize diffuse contribution
+    float Kd = max(dot(fL, fN), 0.0);
+    // fColor = vec4(Kd, Kd, Kd, 1.0);
+    // return;
+
+    // Debugging: Visualize specular contribution
+    vec3 H = normalize(fL + fV);
+    float Ks = pow(max(dot(fN, H), 0.0), matAlpha);
+    // fColor = vec4(Ks, Ks, Ks, 1.0);
+    // return;
+
+    // Final lighting calculation
+    vec4 diffuse = Kd * lightColor * matDiffColor;
+    vec4 specular = Ks * lightColor * matSpecColor;
+    fColor = diffuse + specular;
+    fColor.a = 1.0;
 }

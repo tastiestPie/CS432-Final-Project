@@ -125,13 +125,14 @@ class Plane extends Drawable{
 		gl.uniformMatrix4fv(Plane.uCameraMatrixShader, false, flatten(camera1.cameraMatrix));
 		gl.uniformMatrix4fv(Plane.uProjectionMatrixShader, false, flatten(camera1.projectionMatrix));
 
-		console.log(this.matSpecColor);
+		//console.log(this.matSpecColor);
 		gl.uniform4fv(Plane.uMatDiffColorShader, this.matDiffColor);
 		gl.uniform4fv(Plane.uMatSpecColorShader, this.matSpecColor);
 		gl.uniform1f(Plane.uMatAlphaShader, this.matAlpha);
 
 
-		gl.uniform3fv(Plane.uLightDirectionShader, light1.direction);
+
+		gl.uniform3fv(Plane.uLightDirectionShader, normalize(light1.direction));
 		gl.uniform4fv(Plane.uLightColorShader, light1.color);
 
 		gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, Plane.indexBuffer);

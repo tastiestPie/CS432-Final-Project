@@ -68,9 +68,10 @@ class Camera{
 }
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var light1 = new Light(vec3(0,0,3),vec3(0,0,-1),vec4(1,1,1,1),0,45,1);
+var camera2 = new Camera(vec3(-5,5,5), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1))
+var light1 = new Light(vec3(0,3,3),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
 
-console.log(light1);
+//console.log(light1);
 
 class Drawable{
     constructor(tx,ty,tz,scale,rotX, rotY, rotZ, diffcolor, speccolor, sh){
@@ -101,7 +102,7 @@ class Drawable{
 
 	this.modelMatrix = mult(t,mult(s,mult(rz,mult(ry,rx))));
 
-	console.log(this.modelMatrix);
+	//console.log(this.modelMatrix);
 
     }
 
@@ -120,6 +121,7 @@ window.onload = function init(){
     canvas = document.getElementById( "gl-canvas" );
     gl = canvas.getContext('webgl2');
     if ( !gl ) { alert( "WebGL 2.0 isn't available" ); }
+	
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.9, 0.9, 0.9, 1.0 );
