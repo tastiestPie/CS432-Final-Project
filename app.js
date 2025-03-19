@@ -69,7 +69,7 @@ class Camera{
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
 var camera2 = new Camera(vec3(-4,3,6), vec3(3,4,-1), vec3(0,5,1), vec3(0,5,5));
-var light1 = new Light(vec3(0,3,3),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
+var light1 = new Light(vec3(0,5,0),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
 
 console.log(camera2);
 

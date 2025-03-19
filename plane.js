@@ -41,6 +41,7 @@ class Plane extends Drawable{
 
     static uLightDirectionShader = -1;
     static uLightColorShader = -1;
+	static texture = -1;
 
 	static computeNormals() {
 		// All normals point upward along the Y-axis
@@ -51,8 +52,6 @@ class Plane extends Drawable{
 			vec3(0, 1, 0)
 		];
 	}
-
-	static texture = -1;
 
 	static loadTexture() {
 		Plane.texture = gl.createTexture();
