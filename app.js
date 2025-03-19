@@ -68,7 +68,7 @@ class Camera{
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
 var camera2 = new Camera(vec3(-4,3,6), vec3(3,4,-1), vec3(0,5,1), vec3(0,5,5));
-var light1 = new Light(vec3(0,5,0),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
+var light1 = new Light(vec3(10,50,0),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
 
 //console.log(camera2);
 
@@ -136,7 +136,7 @@ window.onload = function init(){
 	
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.9, 0.9, 0.9, 1.0 );
+    gl.clearColor( 0.3, 0.3, 0.9, 1.0 );
     gl.enable(gl.DEPTH_TEST);
 
 	//skybox = new Skybox(gl, skyboxImagePaths)
@@ -164,13 +164,13 @@ window.onload = function init(){
     var pos = vec3(0,-2,0);
     var rot = vec3(0,0,0);
     var scale = 1.0;
-    var diffcolor = vec4(0.0,1.0,0.0,1.0);
-    var speccolor = vec4(1.0,1.0,1.0,1.0);
-    var shine = 1.0;
+    var diffcolor = vec4(0.5,0.5,0.5,0.5);
+    var speccolor = vec4(0.5,0.5,0.5,0.5);
+    var shine = 0.5;
     tri = new Cube(pos[0],0,pos[2],scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 	plane = new Plane(0,-1, 1, scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	cylinder = new Cylinder(4, 0, 0, scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	cone= new Cone(-4, 0, 0, scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cylinder = new Cylinder(4, 0, 0, 0.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cone= new Cone(-4, 0, 0, 0.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 
 
     render();
