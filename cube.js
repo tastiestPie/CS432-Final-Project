@@ -131,8 +131,8 @@ class Cube extends Drawable{
        	gl.vertexAttribPointer(Cube.aNormalShader, 3, gl.FLOAT, false, 0, 0 );
 
 		gl.uniformMatrix4fv(Cube.uModelMatrixShader, false, flatten(this.modelMatrix));
-		gl.uniformMatrix4fv(Cube.uCameraMatrixShader, false, flatten(camera1.cameraMatrix));
-		gl.uniformMatrix4fv(Cube.uProjectionMatrixShader, false, flatten(camera1.projectionMatrix));
+		gl.uniformMatrix4fv(Cube.uCameraMatrixShader, false, flatten(currentCamera.cameraMatrix));
+		gl.uniformMatrix4fv(Cube.uProjectionMatrixShader, false, flatten(currentCamera.projectionMatrix));
 
 		console.log(this.matSpecColor);
 		gl.uniform4fv(Cube.uMatDiffColorShader, this.matDiffColor);

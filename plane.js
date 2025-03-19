@@ -13,12 +13,20 @@ class Plane extends Drawable{
 		0, 2, 3
     ];
 
+	static vertexTexCoords = [
+		vec2(0.0, 0.0),
+		vec2(1.0, 0.0),
+		vec2(1.0, 1.0),
+		vec2(0.0, 1.0)
+	];
+
     static vPositions = [];
 
     static depth = 32;
     static positionBuffer = -1;
     static indexBuffer = -1;
     static normalBuffer = -1;
+	static texCoordBuffer = -1;
 
     static shaderProgram = -1;
     static aPositionShader = -1;
@@ -34,40 +42,33 @@ class Plane extends Drawable{
     static uLightDirectionShader = -1;
     static uLightColorShader = -1;
 
-    static computeNormals(){
-	var normalSum = [];
-	var counts = [];
-
-	//initialize sum of normals for each vertex and how often its used.
-	for (var i = 0; i<Plane.vertexPositions.length; i++) {
-	    normalSum.push(vec3(0, 0, 0));
-	    counts.push(0);
+	static computeNormals() {
+		// All normals point upward along the Y-axis
+		this.vertexNormals = [
+			vec3(0, 1, 0),
+			vec3(0, 1, 0),
+			vec3(0, 1, 0),
+			vec3(0, 1, 0)
+		];
 	}
 
-	//for each triangle
-	for (var i = 0; i<Plane.indices.length; i+=3) {
-	    var a = Plane.indices[i];
-	    var b = Plane.indices[i+1];
-	    var c = Plane.indices[i+2];
+	static texture = -1;
 
-	    var edge1 = subtract(Plane.vertexPositions[b],Plane.vertexPositions[a])
-	    var edge2 = subtract(Plane.vertexPositions[c],Plane.vertexPositions[b])
-	    var N = cross(edge1,edge2)
+	static loadTexture() {
+		Plane.texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, Plane.texture);
 
-	    normalSum[a] = add(normalSum[a],normalize(N));
-	    counts[a]++;
-	    normalSum[b] = add(normalSum[b],normalize(N));
-	    counts[b]++;
-	    normalSum[c] = add(normalSum[c],normalize(N));
-	    counts[c]++;
+		// Fill the texture with a 1x1 blue pixel.
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
 
+		var image = new Image();
+		image.onload = function() {
+			gl.bindTexture(gl.TEXTURE_2D, Plane.texture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+			gl.generateMipmap(gl.TEXTURE_2D);
+		};
+		image.src = "./Textures/brown-background-natural-sand-texture.jpg";
 	}
-
-	for (var i = 0; i < Plane.vertexPositions.length; i++)
-	    this.vertexNormals[i] = mult(1.0/counts[i],normalSum[i]);
-    }
-
-
 
 
     static initialize() {
@@ -83,6 +84,10 @@ class Plane extends Drawable{
 		gl.bindBuffer( gl.ARRAY_BUFFER, Plane.normalBuffer);
 		gl.bufferData( gl.ARRAY_BUFFER, flatten(Plane.vertexNormals), gl.STATIC_DRAW );
 
+		Plane.texCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, Plane.texCoordBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, flatten(Plane.vertexTexCoords), gl.STATIC_DRAW);
+
 		Plane.indexBuffer = gl.createBuffer();
 		gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, Plane.indexBuffer);
 		gl.bufferData( gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(Plane.indices), gl.STATIC_DRAW );
@@ -90,6 +95,7 @@ class Plane extends Drawable{
 		// Associate our shader variables with our data buffer
 		Plane.aPositionShader = gl.getAttribLocation( Plane.shaderProgram, "aPosition" );
 		Plane.aNormalShader = gl.getAttribLocation( Plane.shaderProgram, "aNormal" );
+		Plane.aTexCoordShader = gl.getAttribLocation(Plane.shaderProgram, "aTexCoord");
 
 		Plane.uModelMatrixShader = gl.getUniformLocation( Plane.shaderProgram, "modelMatrix" );
 		Plane.uCameraMatrixShader = gl.getUniformLocation( Plane.shaderProgram, "cameraMatrix" );
@@ -101,13 +107,15 @@ class Plane extends Drawable{
 
 		Plane.uLightDirectionShader = gl.getUniformLocation( Plane.shaderProgram, "lightDirection" );
 		Plane.uLightColorShader = gl.getUniformLocation( Plane.shaderProgram, "lightColor" );
+		Plane.uTextureShader = gl.getUniformLocation(Plane.shaderProgram, "uTexture");
 
     }
 
     constructor(tx,ty,tz,scale,rotX,rotY,rotZ,diffcolor,speccolor,sh){
         super(tx,ty,tz,scale,rotX,rotY,rotZ,diffcolor,speccolor,sh);
         if(Plane.shaderProgram == -1)
-            Plane.initialize()
+            Plane.initialize();
+			Plane.loadTexture();
 
     }
 
@@ -121,27 +129,34 @@ class Plane extends Drawable{
        	gl.bindBuffer( gl.ARRAY_BUFFER, Plane.normalBuffer);
        	gl.vertexAttribPointer(Plane.aNormalShader, 3, gl.FLOAT, false, 0, 0 );
 
+		gl.bindBuffer(gl.ARRAY_BUFFER, Plane.texCoordBuffer);
+		gl.vertexAttribPointer(Plane.aTexCoordShader, 2, gl.FLOAT, false, 0, 0);
+
 		gl.uniformMatrix4fv(Plane.uModelMatrixShader, false, flatten(this.modelMatrix));
-		gl.uniformMatrix4fv(Plane.uCameraMatrixShader, false, flatten(camera1.cameraMatrix));
-		gl.uniformMatrix4fv(Plane.uProjectionMatrixShader, false, flatten(camera1.projectionMatrix));
+		gl.uniformMatrix4fv(Plane.uCameraMatrixShader, false, flatten(currentCamera.cameraMatrix));
+		gl.uniformMatrix4fv(Plane.uProjectionMatrixShader, false, flatten(currentCamera.projectionMatrix));
 
 		//console.log(this.matSpecColor);
 		gl.uniform4fv(Plane.uMatDiffColorShader, this.matDiffColor);
 		gl.uniform4fv(Plane.uMatSpecColorShader, this.matSpecColor);
 		gl.uniform1f(Plane.uMatAlphaShader, this.matAlpha);
 
-
-
 		gl.uniform3fv(Plane.uLightDirectionShader, normalize(light1.direction));
 		gl.uniform4fv(Plane.uLightColorShader, light1.color);
+
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, Plane.texture);
+		gl.uniform1i(Plane.uTextureShader, 0);
 
 		gl.bindBuffer( gl.ELEMENT_ARRAY_BUFFER, Plane.indexBuffer);
 
 		gl.enableVertexAttribArray(Plane.aPositionShader);
 		gl.enableVertexAttribArray(Plane.aNormalShader);
+		gl.enableVertexAttribArray(Plane.aTexCoordShader);
 		gl.drawElements(gl.TRIANGLES, Plane.indices.length, gl.UNSIGNED_BYTE, 0);
     	gl.disableVertexAttribArray(Plane.aPositionShader);
     	gl.disableVertexAttribArray(Plane.aNormalShader);
+		gl.disableVertexAttribArray(Plane.aTexCoordShader);
     }
 }
 

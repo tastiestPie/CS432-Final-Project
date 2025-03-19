@@ -68,10 +68,10 @@ class Camera{
 }
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var camera2 = new Camera(vec3(-5,5,5), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1))
+var camera2 = new Camera(vec3(-4,3,6), vec3(3,4,-1), vec3(0,5,1), vec3(0,5,5));
 var light1 = new Light(vec3(0,3,3),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
 
-//console.log(light1);
+console.log(camera2);
 
 class Drawable{
     constructor(tx,ty,tz,scale,rotX, rotY, rotZ, diffcolor, speccolor, sh){
@@ -116,6 +116,7 @@ class Drawable{
 }
 
 var tri;
+var currentCamera = camera2;
 
 window.onload = function init(){
     canvas = document.getElementById( "gl-canvas" );
@@ -141,6 +142,9 @@ window.onload = function init(){
 			case "d":
 				camera1.moveRight(0.1);
 				break;
+			case "f":
+				toggleCamera();
+				break;		
 		}
 	});
 
@@ -149,18 +153,26 @@ window.onload = function init(){
     var scale = 1.0;
     var diffcolor = vec4(0.0,1.0,0.0,1.0);
     var speccolor = vec4(1.0,1.0,1.0,1.0);
-    var shine = 2.0;
-    //tri = new Cube(pos[0],pos[1],pos[2],scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	//model = new SMFModel("penguin.smf");
+    var shine = 1.0;
+    tri = new Cube(pos[0],0,pos[2],scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 	plane = new Plane(0,-1, 1, scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	
 
     render();
 };
 
+function toggleCamera(){
+	if (currentCamera === camera1){
+		currentCamera = camera2;
+	} else {
+		currentCamera = camera1;
+	}
+}
+
 function render(){
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    //tri.draw();
-	plane.draw();
+    tri.draw(currentCamera);
+	plane.draw(currentCamera);
 
 	//model.draw(camera1);
 

@@ -5,10 +5,12 @@ uniform vec4 matDiffColor;
 uniform vec4 matSpecColor;
 uniform float matAlpha;
 uniform vec4 lightColor;
+uniform sampler2D uTexture; // Texture sampler
 
 in vec3 L;
 in vec3 V;
 in vec3 N;
+in vec2 vTexCoord; // Texture coordinates from the vertex shader
 
 out vec4 fColor;
 
@@ -18,9 +20,12 @@ void main()
     vec3 fV = normalize(V);
     vec3 fN = normalize(N);
 
+    // Sample the texture
+    vec4 texColor = texture(uTexture, vTexCoord);
+
     // Debugging: Visualize normals
-    fColor = vec4(fN, 1.0);
-    return;
+    // fColor = vec4(fN, 1.0);
+    // return;
 
     // Debugging: Visualize light direction
     // fColor = vec4(fL, 1.0);
@@ -40,6 +45,6 @@ void main()
     // Final lighting calculation
     vec4 diffuse = Kd * lightColor * matDiffColor;
     vec4 specular = Ks * lightColor * matSpecColor;
-    fColor = diffuse + specular;
+    fColor = (diffuse + specular) * texColor; // Multiply by texture color
     fColor.a = 1.0;
 }
