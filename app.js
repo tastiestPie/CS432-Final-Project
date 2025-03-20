@@ -161,7 +161,7 @@ window.onload = function init(){
 	//builds the handmade sandcastle
     cube = new Cube(pos[0],0,pos[2],1.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 	cylinder1 = new Cylinder(2, -1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	cylinder2 = new Cylinder(-2, -1.5, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cylinder2 = new Cylinder(-2, -1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 
 	wave = new RectPrism(-20,-1,0,1.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine)
 
@@ -191,14 +191,13 @@ function toggleCamera(){
 	}
 }
 
-
 function render(){
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	//skybox.render(currentCamera);
 
 
-	//Series of draws to make the "bad" sand castle
+	//Series of draws to make the sand castle
     cube.draw(currentCamera);
 	plane.draw(currentCamera);
 	cylinder1.draw(currentCamera);
@@ -216,6 +215,7 @@ function render(){
 
 	//slowly animate left side sinking from the wave
 	cylinder2.ty -= 0.001;
+
 	cylinder2.updateModelMatrix();
 
 	cone2.ty -= 0.001;
