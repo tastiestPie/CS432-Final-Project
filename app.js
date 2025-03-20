@@ -67,7 +67,7 @@ class Camera{
 }
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
-var camera2 = new Camera(vec3(-4,3,6), vec3(3,4,-1), vec3(0,5,1), vec3(0,5,5));
+var camera2 = new Camera(vec3(0,5,15), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
 var light1 = new Light(vec3(10,50,0),vec3(0,-1,0),vec4(1,1,1,1),0,45,1);
 
 //console.log(camera2);
@@ -86,8 +86,6 @@ class Drawable{
     	this.matDiffColor = diffcolor;
     	this.matSpecColor = speccolor;
     	this.matAlpha = sh;
-
-
     }
 
     updateModelMatrix(){
@@ -115,16 +113,7 @@ class Drawable{
 }
 
 var tri;
-var currentCamera = camera2;
-
-const skyboxImagePaths = [
-    "./Textures/brown-background-natural-sand-texture.jpg", // Positive X
-    "./Textures/brown-background-natural-sand-texture.jpg",  // Negative X
-    "./Textures/brown-background-natural-sand-texture.jpg",   // Positive Y
-    "./Textures/brown-background-natural-sand-texture.jpg", // Negative Y
-    "./Textures/brown-background-natural-sand-texture.jpg",  // Positive Z
-    "./Textures/brown-background-natural-sand-texture.jpg"   // Negative Z
-];
+var currentCamera = camera1;
 
 let skybox;
 
@@ -138,8 +127,6 @@ window.onload = function init(){
     gl.viewport( 0, 0, canvas.width, canvas.height );
     gl.clearColor( 0.3, 0.3, 0.9, 1.0 );
     gl.enable(gl.DEPTH_TEST);
-
-	//skybox = new Skybox(gl, skyboxImagePaths)
 
 	window.addEventListener("keydown", function(event){
 		switch(event.key){
@@ -167,10 +154,30 @@ window.onload = function init(){
     var diffcolor = vec4(0.5,0.5,0.5,0.5);
     var speccolor = vec4(0.5,0.5,0.5,0.5);
     var shine = 0.5;
-    tri = new Cube(pos[0],0,pos[2],scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	plane = new Plane(0,-1, 1, scale,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	cylinder = new Cylinder(4, 0, 0, 0.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
-	cone= new Cone(-4, 0, 0, 0.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+
+	plane = new Plane(4,-1, 1, 2,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	skybox = new Skybox(gl);
+
+	//builds the handmade sandcastle
+    cube = new Cube(pos[0],0,pos[2],1.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cylinder1 = new Cylinder(2, -1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cylinder2 = new Cylinder(-2, -1.5, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+
+	wave = new RectPrism(-20,-1,0,1.5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine)
+
+	//Sandcastle Roofs. C1 and C2 are for the side pillars, C3 is for the main castle (cube)
+	cone1= new Cone(2, 1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cone2= new Cone(-2, 1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	cone3= new Cone(0, 1.70, 0, 0.80,rot[0],rot[1],rot[2],diffcolor,speccolor,shine); 
+
+	//Beachball
+	//sphere = new Sphere(-2, 1, -2, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	
+	//obj models
+	//sandCastle = new OBJModel("./Models/sandcastle.obj");
+	umbrella = new OBJParser("./Models/beach-umbrella.obj");
+	umbrella.parse();
+	umbrella.createBuffers(gl);
 
 
     render();
@@ -184,18 +191,43 @@ function toggleCamera(){
 	}
 }
 
+
 function render(){
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	//skybox.render(currentCamera);
 
-    tri.draw(currentCamera);
+
+	//Series of draws to make the "bad" sand castle
+    cube.draw(currentCamera);
 	plane.draw(currentCamera);
-	cylinder.draw(currentCamera);
-	cone.draw(currentCamera);
+	cylinder1.draw(currentCamera);
+	cylinder2.draw(currentCamera);
+	cone1.draw(currentCamera);
+	cone2.draw(currentCamera);
+	cone3.draw(currentCamera);
 
 
-	//model.draw(camera1);
+	//animate the wave to the right
+	wave.draw(currentCamera);
+	wave.tx += 0.07;
+	wave.ty -= 0.005;
+	wave.updateModelMatrix();
+
+	//slowly animate left side sinking from the wave
+	cylinder2.ty -= 0.001;
+	cylinder2.updateModelMatrix();
+
+	cone2.ty -= 0.001;
+	cone2.updateModelMatrix();
+
+	//For beach ball // scrapped
+	//sphere.draw(currentCamera);
+
+	//obj draws
+	//sandCastle.draw(currentCamera);
+	//umbrella.draw(gl, "");
+
 
 	requestAnimationFrame(render);
 }

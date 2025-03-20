@@ -84,7 +84,7 @@ class Cone extends Drawable {
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 			gl.generateMipmap(gl.TEXTURE_2D);
 		};
-		image.src = "./Textures/brown-background-natural-sand-texture.jpg";
+		image.src = "./Textures/martin-pechy-1IwBabyMXAA-unsplash.jpg";
 	}
 
     static initialize() {

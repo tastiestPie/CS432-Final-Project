@@ -1,9 +1,8 @@
 attribute vec3 aPosition;
-uniform mat4 uProjectionMatrix;
-uniform mat4 uCameraMatrix;
-varying vec3 vTexCoord;
+attribute vec3 a_position;
+varying vec3 v_texCoords;
 
 void main() {
-    vTexCoord = aPosition; // Pass the vertex position as texture coordinate
-    gl_Position = uProjectionMatrix * uCameraMatrix * vec4(aPosition, 1.0);
+    v_texCoords = a_position; 
+    gl_Position = vec4(a_position, 1.0);
 }
