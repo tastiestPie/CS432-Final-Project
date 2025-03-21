@@ -44,7 +44,6 @@ class Plane extends Drawable{
 	static texture = -1;
 
 	static computeNormals() {
-		// All normals point upward along the Y-axis
 		this.vertexNormals = [
 			vec3(0, 1, 0),
 			vec3(0, 1, 0),

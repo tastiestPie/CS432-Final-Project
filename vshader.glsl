@@ -15,20 +15,11 @@ void main()
 {
     gl_Position = projectionMatrix * cameraMatrix * modelMatrix * vec4(aPosition, 1.0);
     
-    // Compute vectors in camera coordinates
-    // The vertex in camera coordinates
     vec3 pos = (cameraMatrix * modelMatrix * vec4(aPosition, 1.0)).xyz;
 
-    // The ray from the vertex towards the light
-    // For a directional light, this is just -lightDirection
     L = normalize((-cameraMatrix * vec4(lightDirection, 0.0)).xyz);
-    
-    // The ray from the vertex towards the camera
     V = normalize(vec3(0, 0, 0) - pos);
-    
-    // Normal in camera coordinates
     N = normalize(cameraMatrix * modelMatrix * vec4(aNormal, 0)).xyz;
     
-    // Pass texture coordinates to the fragment shader
     vTexCoord = aTexCoord;
 }

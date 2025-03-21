@@ -20,23 +20,22 @@ void main()
     vec3 fV = normalize(V);
     vec3 fN = normalize(N);
 
-    // Sample the texture
     vec4 texColor = texture(uTexture, vTexCoord);
 
-    // Debugging: Visualize normals
+    // Debugging
     // fColor = vec4(fN, 1.0);
     // return;
 
-    // Debugging: Visualize light direction
+    // Debugging
     // fColor = vec4(fL, 1.0);
     // return;
 
-    // Debugging: Visualize diffuse contribution
+    // Debugging
     float Kd = max(dot(fL, fN), 0.0);
     // fColor = vec4(Kd, Kd, Kd, 1.0);
     // return;
 
-    // Debugging: Visualize specular contribution
+    // Debugging
     vec3 H = normalize(fL + fV);
     float Ks = pow(max(dot(fN, H), 0.0), matAlpha);
     // fColor = vec4(Ks, Ks, Ks, 1.0);

@@ -11,17 +11,17 @@ class Sphere extends Drawable {
 
         this.generateSphere();
         this.initialize();
-        this.loadTexture(); // Load the texture
+        this.loadTexture();
     }
 
     generateSphere() {
         for (let stack = 0; stack <= this.stacks; ++stack) {
-            const phi = (stack / this.stacks) * Math.PI; // Latitude
+            const phi = (stack / this.stacks) * Math.PI;
             const sinPhi = Math.sin(phi);
             const cosPhi = Math.cos(phi);
 
             for (let slice = 0; slice <= this.slices; ++slice) {
-                const theta = (slice / this.slices) * 2 * Math.PI; // Longitude
+                const theta = (slice / this.slices) * 2 * Math.PI;
                 const sinTheta = Math.sin(theta);
                 const cosTheta = Math.cos(theta);
 

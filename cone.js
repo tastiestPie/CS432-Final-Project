@@ -31,37 +31,30 @@ class Cone extends Drawable {
 
         const angleStep = (2 * Math.PI) / segments;
 
-        // Apex (top vertex) of the cone
         vertices.push(vec3(0, height / 2, 0));
-        normals.push(vec3(0, 1, 0)); // Normal at the apex
-        texCoords.push(vec2(0.5, 1)); // Center of the top texture
+        normals.push(vec3(0, 1, 0)); 
+        texCoords.push(vec2(0.5, 1)); 
 
-        // Base vertices
         for (let i = 0; i <= segments; i++) {
             const angle = i * angleStep;
             const x = radius * Math.cos(angle);
             const z = radius * Math.sin(angle);
 
-            // Base vertex
             vertices.push(vec3(x, -height / 2, z));
-            normals.push(vec3(x, 0, z)); // Normal pointing outward
-            texCoords.push(vec2(i / segments, 0)); // Texture coordinates for the base
+            normals.push(vec3(x, 0, z)); 
+            texCoords.push(vec2(i / segments, 0));
         }
 
-        // Generate indices for the sides
         for (let i = 0; i < segments; i++) {
-            // Triangle connecting apex, current base vertex, and next base vertex
             indices.push(0, i + 1, i + 2);
         }
 
-        // Generate indices for the base
-        const baseCenterIndex = vertices.length; // Index for the base center
-        vertices.push(vec3(0, -height / 2, 0)); // Base center vertex
-        normals.push(vec3(0, -1, 0)); // Normal pointing down
-        texCoords.push(vec2(0.5, 0.5)); // Center of the base texture
+        const baseCenterIndex = vertices.length;
+        vertices.push(vec3(0, -height / 2, 0));
+        normals.push(vec3(0, -1, 0));
+        texCoords.push(vec2(0.5, 0.5));
 
         for (let i = 1; i <= segments; i++) {
-            // Triangle connecting base center, current base vertex, and next base vertex
             indices.push(baseCenterIndex, i + 1, i);
         }
 

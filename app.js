@@ -64,6 +64,7 @@ class Camera{
 		this.vrp = add(this.vrp, scale(amount, this.u));
 		this.updateCameraMatrix();
 	}
+	
 }
 
 var camera1 = new Camera(vec3(0,0,3), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
@@ -113,7 +114,7 @@ class Drawable{
 }
 
 var tri;
-var currentCamera = camera1;
+var currentCamera = camera2;
 
 let skybox;
 
@@ -156,6 +157,7 @@ window.onload = function init(){
     var shine = 0.5;
 
 	plane = new Plane(4,-1, 1, 2,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	back = new Background(4,40, -20, 5,rot[0],rot[1],rot[2],diffcolor,speccolor,shine)
 	skybox = new Skybox(gl);
 
 	//builds the handmade sandcastle
@@ -170,14 +172,22 @@ window.onload = function init(){
 	cone2= new Cone(-2, 1, -0.5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 	cone3= new Cone(0, 1.70, 0, 0.80,rot[0],rot[1],rot[2],diffcolor,speccolor,shine); 
 
+	//cone4= new Cone(3, 0, 0, -2,rot[0],rot[1],rot[2],diffcolor,speccolor,shine); 
+	
+	rock1 = new Rock(-4, -1.4, 2, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock2 = new Rock(-7, -1.4, 7, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock3 = new Rock(-2, -1.4, -8, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock4 = new Rock(-6, -1.4, 3, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock5 = new Rock(-3, -1.4, 5, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock6 = new Rock(-4, -1.4, -4, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+	rock7 = new Rock(-5, -1.4, -2, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
+
 	//Beachball
 	//sphere = new Sphere(-2, 1, -2, 1,rot[0],rot[1],rot[2],diffcolor,speccolor,shine);
 	
 	//obj models
 	//sandCastle = new OBJModel("./Models/sandcastle.obj");
-	umbrella = new OBJParser("./Models/beach-umbrella.obj");
-	umbrella.parse();
-	umbrella.createBuffers(gl);
+	//umbrella = new OBJParser("./Models/beach-umbrella.obj");
 
 
     render();
@@ -194,7 +204,8 @@ function toggleCamera(){
 function render(){
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	//skybox.render(currentCamera);
+	skybox.render(currentCamera);
+	back.draw(currentCamera);
 
 
 	//Series of draws to make the sand castle
@@ -205,6 +216,8 @@ function render(){
 	cone1.draw(currentCamera);
 	cone2.draw(currentCamera);
 	cone3.draw(currentCamera);
+
+	//cone4.draw(currentCamera);
 
 
 	//animate the wave to the right
@@ -221,12 +234,20 @@ function render(){
 	cone2.ty -= 0.001;
 	cone2.updateModelMatrix();
 
+	rock1.draw(currentCamera);
+	rock2.draw(currentCamera);
+	rock3.draw(currentCamera);
+	rock4.draw(currentCamera);
+	rock5.draw(currentCamera);
+	rock6.draw(currentCamera);
+	rock7.draw(currentCamera);
+
 	//For beach ball // scrapped
 	//sphere.draw(currentCamera);
 
 	//obj draws
 	//sandCastle.draw(currentCamera);
-	//umbrella.draw(gl, "");
+	//umbrella.draw(gl);
 
 
 	requestAnimationFrame(render);
